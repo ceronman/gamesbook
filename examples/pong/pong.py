@@ -37,22 +37,22 @@ def update(dt):
     ball.x = ball.x + ball.speed_x * dt
     ball.y = ball.y + ball.speed_y * dt
 
-    if ball.x < 0  or (ball.x +  ball.width) > window.width:
+    if ball.x <= 0  or (ball.x +  ball.width) >= window.width:
         ball.speed_x = ball.speed_x * -1
 
-    if ball.y < 0 or (ball.y + ball.width) > window.height:
+    if ball.y <= 0 or (ball.y + ball.width) >= window.height:
         ball.speed_y = ball.speed_y * -1
 
-    if keys[key.A]:
+    if keys[key.A] and paddle1.y < (window.height - paddle1.height):
         paddle1.y = paddle1.y + paddle1.speed * dt
 
-    if keys[key.Z]:
+    if keys[key.Z] and paddle1.y > 0:
         paddle1.y = paddle1.y - paddle1.speed * dt
 
-    if keys[key.UP]:
+    if keys[key.UP] and paddle2.y < (window.height - paddle2.height):
         paddle2.y = paddle2.y + paddle2.speed * dt
 
-    if keys[key.DOWN]:
+    if keys[key.DOWN] and paddle2.y > 0:
         paddle2.y = paddle2.y - paddle2.speed * dt
 
 clock.schedule_interval(update, 1/60.0)
