@@ -37,11 +37,32 @@ def update(dt):
     ball.x = ball.x + ball.speed_x * dt
     ball.y = ball.y + ball.speed_y * dt
 
-    if ball.x <= 0  or (ball.x +  ball.width) >= window.width:
-        ball.speed_x = ball.speed_x * -1
+    if ball.x < (PADDLE_MARGIN + paddle1.width):
+        ball.x = PADDLE_MARGIN + paddle1.width
+        if ((ball.y + ball.height) > paddle1.y
+            and (ball.y - ball.height) < (paddle1.y + paddle1.height)):
+            ball.speed_x = ball.speed_x * -1
+        else:
+            ball.x = window.width / 2
+            ball.y = window.height / 2
 
-    if ball.y <= 0 or (ball.y + ball.width) >= window.height:
+    if (ball.x + ball.width) > paddle2.x:
+        ball.x = paddle2.x - ball.width
+        if ((ball.y + ball.height) > paddle2.y
+            and (ball.y - ball.height) < (paddle2.y + paddle2.height)):
+            ball.speed_x = ball.speed_x * -1
+        else:
+            ball.x = window.width / 2
+            ball.y = window.height / 2
+
+    if (ball.y + ball.height) > window.height:
+        ball.y = window.height - ball.height
         ball.speed_y = ball.speed_y * -1
+
+    if ball.y < 0:
+        ball.y = 0
+        ball.speed_y = ball.speed_y * -1
+
 
     if keys[key.A] and paddle1.y < (window.height - paddle1.height):
         paddle1.y = paddle1.y + paddle1.speed * dt
