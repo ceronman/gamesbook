@@ -52,7 +52,7 @@ pause_label = Label('PAUSED',
 @window.event
 def on_draw():
     window.clear()
-    if state == 'playing':
+    if state == 'playing' or state == 'scored':
         ball.draw()
         paddle1.draw()
         paddle2.draw()
@@ -64,7 +64,9 @@ def on_draw():
 @window.event
 def on_key_press(symbol, modifiers):
     global state
-    if symbol == key.P:
+    if state == 'scored':
+        state = 'playing'
+    elif symbol == key.P:
         state = 'paused' if state == 'playing' else 'playing'
 
 keys = key.KeyStateHandler()
@@ -73,7 +75,7 @@ window.push_handlers(keys)
 def update(dt):
     global state
 
-    if state == 'paused':
+    if state == 'paused' or state == 'scored':
         return
 
     elif state == 'playing':
@@ -91,6 +93,7 @@ def update(dt):
                 score_label_2.text = str(score_2)
                 ball.x = window.width / 2
                 ball.y = window.height / 2
+                state = 'scored'
 
         if (ball.x + ball.width) > paddle2.x:
             ball.x = paddle2.x - ball.width
@@ -103,6 +106,7 @@ def update(dt):
                 score_label_1.text = str(score_1)
                 ball.x = window.width / 2
                 ball.y = window.height / 2
+                state = 'scored'
 
         if (ball.y + ball.height) > window.height:
             ball.y = window.height - ball.height
