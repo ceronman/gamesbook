@@ -1,3 +1,5 @@
+import math
+
 from pyglet import app, resource, clock
 from pyglet.sprite import Sprite
 from pyglet.text import Label
@@ -5,12 +7,16 @@ from pyglet.window import Window, key
 
 window = Window()
 
+MAX_BALL_SPEED = 500
+INITIAL_BALL_SPEED = 400
+
 ball_image = resource.image('images/ball.png')
 ball = Sprite(ball_image)
 ball.x = window.width / 2 - ball.width/2
 ball.y = window.height / 2 - ball.width/2
-ball.speed_x = 200
-ball.speed_y = 200
+
+ball.speed_x = INITIAL_BALL_SPEED
+ball.speed_y = INITIAL_BALL_SPEED
 
 PADDLE_MARGIN = 10
 
@@ -18,11 +24,11 @@ paddle_image = resource.image('images/paddle.png')
 paddle1 = Sprite(paddle_image)
 paddle1.x = PADDLE_MARGIN
 paddle1.y = window.height / 2 - paddle1.height / 2
-paddle1.speed = 200
+paddle1.speed = 400
 paddle2 = Sprite(paddle_image)
 paddle2.x = window.width - paddle2.width - PADDLE_MARGIN
 paddle2.y = window.height / 2 - paddle2.height / 2
-paddle2.speed = 200
+paddle2.speed = 400
 
 score_1 = 0
 score_2 = 0
@@ -87,12 +93,19 @@ def update(dt):
             if ((ball.y + ball.height) > paddle1.y
                 and (ball.y - ball.height) < (paddle1.y + paddle1.height)):
                 ball.speed_x = ball.speed_x * -1
+                ball_center = ball.y + ball.height / 2
+                paddle_center = paddle1.y + paddle1.height / 2
+                paddle_distance = abs(paddle_center - ball_center)
+                speed_y = MAX_BALL_SPEED * 2 * paddle_distance / paddle1.height
+                ball.speed_y = math.copysign(speed_y, ball.speed_y)
             else:
                 global score_2
                 score_2 = score_2 + 1
                 score_label_2.text = str(score_2)
                 ball.x = window.width / 2
                 ball.y = window.height / 2
+                ball.speed_x = ball.speed_x * -1
+                ball.speed_y = INITIAL_BALL_SPEED
                 state = 'scored'
 
         if (ball.x + ball.width) > paddle2.x:
@@ -100,12 +113,19 @@ def update(dt):
             if ((ball.y + ball.height) > paddle2.y
                 and (ball.y - ball.height) < (paddle2.y + paddle2.height)):
                 ball.speed_x = ball.speed_x * -1
+                ball_center = ball.y + ball.height / 2
+                paddle_center = paddle2.y + paddle2.height / 2
+                paddle_distance = abs(paddle_center - ball_center)
+                speed_y = MAX_BALL_SPEED * 2 * paddle_distance / paddle2.height
+                ball.speed_y = math.copysign(speed_y, ball.speed_y)
             else:
                 global score_1
                 score_1 = score_1 + 1
                 score_label_1.text = str(score_1)
                 ball.x = window.width / 2
                 ball.y = window.height / 2
+                ball.speed_x = ball.speed_x * -1
+                ball.speed_y = INITIAL_BALL_SPEED
                 state = 'scored'
 
         if (ball.y + ball.height) > window.height:
