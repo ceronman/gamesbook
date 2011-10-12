@@ -55,6 +55,9 @@ pause_label = Label('PAUSED',
                     y = window.height/2,
                     anchor_x = 'center', anchor_y = 'center')
 
+bounce_sound = resource.media('sounds/bounce.wav', streaming=False)
+goal_sound = resource.media('sounds/goal.wav', streaming=False)
+
 @window.event
 def on_draw():
     window.clear()
@@ -98,6 +101,7 @@ def update(dt):
                 paddle_distance = abs(paddle_center - ball_center)
                 speed_y = MAX_BALL_SPEED * 2 * paddle_distance / paddle1.height
                 ball.speed_y = math.copysign(speed_y, ball.speed_y)
+                bounce_sound.play()
             else:
                 global score_2
                 score_2 = score_2 + 1
@@ -106,6 +110,7 @@ def update(dt):
                 ball.y = window.height / 2
                 ball.speed_x = ball.speed_x * -1
                 ball.speed_y = INITIAL_BALL_SPEED
+                goal_sound.play()
                 state = 'scored'
 
         if (ball.x + ball.width) > paddle2.x:
@@ -118,6 +123,7 @@ def update(dt):
                 paddle_distance = abs(paddle_center - ball_center)
                 speed_y = MAX_BALL_SPEED * 2 * paddle_distance / paddle2.height
                 ball.speed_y = math.copysign(speed_y, ball.speed_y)
+                bounce_sound.play()
             else:
                 global score_1
                 score_1 = score_1 + 1
@@ -126,15 +132,18 @@ def update(dt):
                 ball.y = window.height / 2
                 ball.speed_x = ball.speed_x * -1
                 ball.speed_y = INITIAL_BALL_SPEED
+                goal_sound.play()
                 state = 'scored'
 
         if (ball.y + ball.height) > window.height:
             ball.y = window.height - ball.height
             ball.speed_y = ball.speed_y * -1
+            bounce_sound.play()
 
         if ball.y < 0:
             ball.y = 0
             ball.speed_y = ball.speed_y * -1
+            bounce_sound.play()
 
 
         if keys[key.A] and paddle1.y < (window.height - paddle1.height):
