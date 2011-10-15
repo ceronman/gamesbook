@@ -1,6 +1,7 @@
 import math
 
 from pyglet import app, resource, clock
+from pyglet.media import Player
 from pyglet.sprite import Sprite
 from pyglet.text import Label
 from pyglet.window import Window, key
@@ -58,6 +59,13 @@ pause_label = Label('PAUSED',
 bounce_sound = resource.media('sounds/bounce.wav', streaming=False)
 goal_sound = resource.media('sounds/goal.wav', streaming=False)
 
+music = resource.media('sounds/ride-the-storm.ogg')
+music_player = Player()
+music_player.queue(music)
+music_player.volume = 0.5
+music_player.eos_action = music_player.EOS_LOOP
+music_player.play()
+
 @window.event
 def on_draw():
     window.clear()
@@ -76,7 +84,12 @@ def on_key_press(symbol, modifiers):
     if state == 'scored':
         state = 'playing'
     elif symbol == key.P:
-        state = 'paused' if state == 'playing' else 'playing'
+        if state == 'playing':
+            state = 'paused'
+            music_player.pause()
+        elif state == 'paused':
+            state = 'playing'
+            music_player.play()
 
 keys = key.KeyStateHandler()
 window.push_handlers(keys)
